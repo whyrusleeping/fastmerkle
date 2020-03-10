@@ -1,12 +1,7 @@
 # fastmerkle
 
-Proof of concept of bitcoin merkle tree calcuation on GPUs using OpenCL.  
+A fork of fastmerkle to benchmark how fast GPUs can run iterated SHAs
 
-**Why?**  
-Some people in the bitcoin community claim that bitcoin's merkle tree does not scale;
-this code gives some ideas of how fast we can calculate Gigabyte block merkle trees today using GPUs instead of CPUs.  
-If your computer doesn't have a dedicated graphics card, you might still be able to use the (slower) GPU on your processor.  
-You can not run the calculations on multiple GPUs right now, but it would be trivial to implement.
 
 **Usage**
 
@@ -53,22 +48,8 @@ iterations = 10
 Here you'll have to set your platform id and your device id. You can see that I already entered these two identifiers.  
 You can keep the other two properties as is.
 
-Now you can perform a short integrity check to see whether the program computes the right hashes. Run:  
-
-`./fastmerkle file 563638.bin` (`.\fastmerkle.exe file 563638.bin` on Windows) to hash the largest bitcoin block ever found: [563638](https://blockchair.com/bitcoin-sv/block/563638).  
-
-The merkle root hash should be this one: `a46310f75adc7a63ff5be1fbba23fc345efce5175c59e1b7a443a297f8d3219d`.  
-'Mutated' should be `false`.  
-
-If everything is working so far, you can now run the benchmark. If not, try setting `use_host_ptr` to 1.
-
 `./fastmerkle benchmark` (`.\fastmerkle.exe benchmark` on Windows) to run a benchmark. This will take some time.
 
-Sometimes, the operating system has issues freeing memory fast enough (the benchmark consumes a lot) in which case it crashes the program.  
-You can just run `./fastmerkle custom` (`.\fastmerkle.exe custom` on Windows) and enter the number 33554432 to do one single iteration of hashing a 13.5GB block.
-That's the most interesting time to know.
-
-Assuming an average transaction size of 400 byte, you can use the following formular to calculate the block size from the number of leaves: `BLOCKSIZE_IN_MB = LEAVES * 400 / 1000000`. The benchmark tests up to 33554432 leaves which corresponds to a blocksize of about 13.5GB.
 
 **How to compile?**  
 

@@ -233,19 +233,20 @@ static void sha256d_cat(global const uint* lhs, global const uint* rhs, global u
 
 #define EQUAL(lhs, rhs) (lhs[0] == rhs[0] && lhs[1] == rhs[1] && lhs[2] == rhs[2] && lhs[3] == rhs[3] && lhs[4] == rhs[4] && lhs[5] == rhs[5] && lhs[6] == rhs[6] && lhs[7] == rhs[7])
 
-kernel void merkle(global const uchar* data, const ulong leaves, const ulong round, global int* mutated){
+kernel void dohashes(global const uchar* data, const ulong leaves, const ulong round, global int* mutated){
     size_t id = get_global_id(0);
     size_t size = get_global_size(0);
 
-    global const uint* lhs = (global const uint*)&data[SHA256_DIGEST_SIZE * (id << (round + 1))];
-    global const uint* rhs = (global const uint*)&data[SHA256_DIGEST_SIZE * ((id << (round + 1)) + (1 << round))];
+    global const uint* lhs = (global const uint*)&data[SHA256_DIGEST_SIZE * id];
 
-    if(1+(2*id) == leaves){ // last work item and leaf count odd
         sha256d_cat(lhs, lhs, lhs); // SHA256(SHA256(lhs || lhs))
-    } else {
-        if(1+id == size && EQUAL(lhs, rhs)){ // last work item and leaf count even
-            *mutated = 1; // -> set to mutated if duplicate hash has been found
-        }
-        sha256d_cat(lhs, rhs, lhs); // SHA256(SHA256(lhs || rhs))
-    }
+        sha256d_cat(lhs, lhs, lhs); // SHA256(SHA256(lhs || lhs))
+        sha256d_cat(lhs, lhs, lhs); // SHA256(SHA256(lhs || lhs))
+        sha256d_cat(lhs, lhs, lhs); // SHA256(SHA256(lhs || lhs))
+        sha256d_cat(lhs, lhs, lhs); // SHA256(SHA256(lhs || lhs))
+        sha256d_cat(lhs, lhs, lhs); // SHA256(SHA256(lhs || lhs))
+        sha256d_cat(lhs, lhs, lhs); // SHA256(SHA256(lhs || lhs))
+        sha256d_cat(lhs, lhs, lhs); // SHA256(SHA256(lhs || lhs))
+        sha256d_cat(lhs, lhs, lhs); // SHA256(SHA256(lhs || lhs))
+        sha256d_cat(lhs, lhs, lhs); // SHA256(SHA256(lhs || lhs))
 }
